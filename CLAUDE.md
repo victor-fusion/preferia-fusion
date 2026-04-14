@@ -23,11 +23,11 @@ No test runner is configured yet.
 
 **Data access pattern**: Server Components query Supabase directly via `lib/supabase/server.ts` — there is no API route layer (except `app/auth/callback/route.ts` for OAuth). Client Components use `lib/supabase/client.ts` for mutations (form submissions, etc.).
 
-**Route protection**: `proxy.ts` (the Next.js middleware) redirects unauthenticated users to `/login`. The `/admin` layout additionally checks for `admin` or `superadmin` role and redirects to `/dashboard` otherwise.
+**Route protection**: `middleware.ts` (the Next.js middleware) redirects unauthenticated users to `/login`. The `/admin` layout additionally checks for `admin` or `superadmin` role and redirects to `/dashboard` otherwise.
 
 ## Authentication & Roles
 
-Supabase Auth handles login (email/password + Google OAuth). Three roles stored in `profiles.role`:
+Supabase Auth handles login (email/password only). Three roles stored in `profiles.role`:
 
 - `user` — default; can view dashboard, submit preferences and playlist
 - `admin` — can confirm payments, manage drinks/norms/playlist
