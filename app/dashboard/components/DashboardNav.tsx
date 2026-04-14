@@ -1,21 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import type { Profile } from '@/lib/types/database.types'
 
 export function DashboardNav({ profile }: { profile: Profile }) {
-  const router = useRouter()
   const [loading, setLoading] = useState(false)
 
   async function handleSignOut() {
     setLoading(true)
     const supabase = createClient()
     await supabase.auth.signOut()
-    router.push('/')
-    router.refresh()
+    window.location.href = '/'
   }
 
   const initials = profile.full_name

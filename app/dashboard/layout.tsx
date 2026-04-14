@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { DashboardNav } from './components/DashboardNav'
 
 export default async function DashboardLayout({
@@ -12,13 +13,34 @@ export default async function DashboardLayout({
 
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
+  let { data: profile } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', user.id)
     .single()
 
-  if (!profile) redirect('/login')
+  // Si el usuario existe en auth pero no tiene perfil (el trigger no disparó),
+  // lo creamos con el cliente admin para saltarnos RLS.
+  if (!profile) {
+    const admin = createAdminClient()
+    const { data: created } = await admin
+      .from('profiles')
+      .insert({
+        id: user.id,
+        full_name:
+          user.user_metadata?.full_name ??
+          user.user_metadata?.name ??
+          user.email?.split('@')[0] ??
+          'Usuario',
+        avatar_url: user.user_metadata?.avatar_url ?? null,
+        role: user.email === 'victor@fusionstartups.com' ? 'superadmin' : 'user',
+      })
+      .select('*')
+      .single()
+    profile = created
+  }
+
+  if (!profile) redirect('/')
 
   return (
     <div

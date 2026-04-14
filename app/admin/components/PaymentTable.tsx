@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
+import { sendPasswordReset } from '../actions'
 
 type Filter = 'todos' | 'pago_enviado' | 'confirmado' | 'sin_confirmar'
 
@@ -21,10 +22,18 @@ const badgeMap: Record<string, { label: string; className: string }> = {
   sin_confirmar: { label: '⬜ Sin confirmar', className: 'badge-unconfirmed' },
 }
 
-export function PaymentTable({ initialRows }: { initialRows: Row[] }) {
+export function PaymentTable({
+  initialRows,
+  isSuperadmin = false,
+}: {
+  initialRows: Row[]
+  isSuperadmin?: boolean
+}) {
   const [rows, setRows] = useState(initialRows)
   const [filter, setFilter] = useState<Filter>('todos')
   const [loading, setLoading] = useState<string | null>(null)
+  const [resetting, setResetting] = useState<string | null>(null)
+  const [resetOk, setResetOk] = useState<string | null>(null)
 
   const filters: { key: Filter; label: string }[] = [
     { key: 'todos', label: 'Todos' },
@@ -52,6 +61,17 @@ export function PaymentTable({ initialRows }: { initialRows: Row[] }) {
       )
     )
     setLoading(null)
+  }
+
+  async function handleResetPassword(userId: string) {
+    setResetting(userId)
+    setResetOk(null)
+    const { error } = await sendPasswordReset(userId)
+    setResetting(null)
+    if (!error) {
+      setResetOk(userId)
+      setTimeout(() => setResetOk(null), 3000)
+    }
   }
 
   return (
@@ -104,6 +124,20 @@ export function PaymentTable({ initialRows }: { initialRows: Row[] }) {
                 >
                   Verificar pago
                 </Button>
+              )}
+              {isSuperadmin && (
+                resetOk === row.id ? (
+                  <span className="text-xs text-secondary font-medium">✓ Email enviado</span>
+                ) : (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    loading={resetting === row.id}
+                    onClick={() => handleResetPassword(row.id)}
+                  >
+                    Reset contraseña
+                  </Button>
+                )
               )}
             </div>
           )

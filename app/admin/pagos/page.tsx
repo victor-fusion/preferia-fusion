@@ -1,13 +1,21 @@
+import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { PaymentTable } from '../components/PaymentTable'
 
 export default async function PagosPage() {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
 
-  const { data } = await supabase
-    .from('profiles')
-    .select('id, full_name, created_at, attendance(payment_status, payment_confirmed_at, created_at)')
-    .order('full_name')
+  const [{ data: me }, { data }] = await Promise.all([
+    supabase.from('profiles').select('role').eq('id', user.id).single(),
+    supabase
+      .from('profiles')
+      .select('id, full_name, created_at, attendance(payment_status, payment_confirmed_at, created_at)')
+      .order('full_name'),
+  ])
+
+  const isSuperadmin = (me as { role: string } | null)?.role === 'superadmin'
 
   const rows = (data ?? []).map(p => ({
     id: p.id,
@@ -21,7 +29,7 @@ export default async function PagosPage() {
   return (
     <div className="flex flex-col gap-5">
       <h1 className="font-display text-2xl font-bold text-text italic">Gestión de pagos</h1>
-      <PaymentTable initialRows={rows} />
+      <PaymentTable initialRows={rows} isSuperadmin={isSuperadmin} />
     </div>
   )
 }

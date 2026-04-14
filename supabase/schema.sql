@@ -172,6 +172,9 @@ ALTER TABLE event_settings         ENABLE ROW LEVEL SECURITY;
 ALTER TABLE drinks                 ENABLE ROW LEVEL SECURITY;
 
 -- profiles
+CREATE POLICY "users_insert_own_profile"
+  ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
+
 CREATE POLICY "users_read_own_profile"
   ON profiles FOR SELECT USING (auth.uid() = id);
 

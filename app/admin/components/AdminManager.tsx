@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import type { UserRole } from '@/lib/types/database.types'
+import { sendPasswordReset } from '../actions'
 
 interface ProfileRow {
   id: string
@@ -27,6 +28,8 @@ export function AdminManager({
 }) {
   const [profiles, setProfiles] = useState(initialProfiles)
   const [loading, setLoading] = useState<string | null>(null)
+  const [resetting, setResetting] = useState<string | null>(null)
+  const [resetOk, setResetOk] = useState<string | null>(null)
 
   async function toggleRole(id: string, current: UserRole) {
     if (id === currentUserId) return
@@ -36,6 +39,17 @@ export function AdminManager({
     await supabase.from('profiles').update({ role: newRole }).eq('id', id)
     setProfiles(prev => prev.map(p => p.id === id ? { ...p, role: newRole } : p))
     setLoading(null)
+  }
+
+  async function handleResetPassword(id: string) {
+    setResetting(id)
+    setResetOk(null)
+    const { error } = await sendPasswordReset(id)
+    setResetting(null)
+    if (!error) {
+      setResetOk(id)
+      setTimeout(() => setResetOk(null), 3000)
+    }
   }
 
   return (
@@ -55,6 +69,20 @@ export function AdminManager({
             >
               {p.role === 'admin' ? 'Quitar admin' : 'Hacer admin'}
             </Button>
+          )}
+          {p.id !== currentUserId && (
+            resetOk === p.id ? (
+              <span className="text-xs text-secondary font-medium">✓ Email enviado</span>
+            ) : (
+              <Button
+                size="sm"
+                variant="ghost"
+                loading={resetting === p.id}
+                onClick={() => handleResetPassword(p.id)}
+              >
+                Reset contraseña
+              </Button>
+            )
           )}
           {p.id === currentUserId && (
             <span className="text-xs text-text-muted">Tú</span>

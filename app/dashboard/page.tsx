@@ -34,7 +34,7 @@ export default async function DashboardPage() {
     supabase.from('profiles').select('*, attendance(payment_status)').order('full_name'),
   ])
 
-  if (!profile) redirect('/login')
+  if (!profile) redirect('/')
 
   const hasPaid   = attendance?.payment_status === 'confirmado' || attendance?.payment_status === 'pago_enviado'
   const hasDrinks = (preferences?.length ?? 0) > 0
