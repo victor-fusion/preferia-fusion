@@ -1,26 +1,111 @@
 @import "tailwindcss";
 
+/* ─── Design tokens ─────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-primary:       #9B1C1C;
+  --color-primary-light: #C53030;
+  --color-secondary:     #1A6B3A;
+  --color-secondary-light: #22864A;
+  --color-bg:            #FDF6EC;
+  --color-gold:          #C9963C;
+  --color-gold-light:    #E2B75A;
+  --color-text:          #1A1A1A;
+  --color-text-muted:    #6B6B6B;
+  --color-surface:       #FFFFFF;
+  --color-border:        #E8D5B7;
+  --color-error:         #DC2626;
 }
 
+/* ─── Tailwind v4: expose CSS vars as utility classes ────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary:        var(--color-primary);
+  --color-primary-light:  var(--color-primary-light);
+  --color-secondary:      var(--color-secondary);
+  --color-secondary-light: var(--color-secondary-light);
+  --color-bg:             var(--color-bg);
+  --color-gold:           var(--color-gold);
+  --color-gold-light:     var(--color-gold-light);
+  --color-text:           var(--color-text);
+  --color-text-muted:     var(--color-text-muted);
+  --color-surface:        var(--color-surface);
+  --color-border:         var(--color-border);
+  --color-error:          var(--color-error);
+
+  --font-display: var(--font-playfair);
+  --font-body:    var(--font-inter);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base ──────────────────────────────────────────────── */
+html {
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  background-color: var(--color-bg);
+  min-height: 100dvh;
 }
+
+/* ─── Stripes helper (vertical rojo/blanco) ─────────────── */
+.stripes-red {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-primary) 0px,
+    var(--color-primary) 14px,
+    #ffffff 14px,
+    #ffffff 28px
+  );
+}
+
+.stripes-green {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-secondary) 0px,
+    var(--color-secondary) 14px,
+    #ffffff 14px,
+    #ffffff 28px
+  );
+}
+
+/* ─── Lunares helper (detalle sutil) ────────────────────── */
+.polka-dots {
+  background-image: radial-gradient(
+    circle,
+    var(--color-gold) 1.5px,
+    transparent 1.5px
+  );
+  background-size: 20px 20px;
+}
+
+/* ─── Card dorada ───────────────────────────────────────── */
+.card-gold {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-gold);
+  border-radius: 1rem;
+  box-shadow: 0 2px 12px 0 rgba(201, 150, 60, 0.10);
+}
+
+/* ─── Badge helpers ─────────────────────────────────────── */
+.badge-confirmed {
+  background: #D1FAE5;
+  color: #065F46;
+  border: 1px solid #6EE7B7;
+}
+
+.badge-pending {
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FCD34D;
+}
+
+.badge-unconfirmed {
+  background: #F3F4F6;
+  color: #374151;
+  border: 1px solid #D1D5DB;
+}
+
+/* ─── Scrollbar sutil ───────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
