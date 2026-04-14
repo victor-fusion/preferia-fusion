@@ -1,6 +1,7 @@
 'use client'
 
 import { forwardRef } from 'react'
+import { motion } from 'framer-motion'
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
 type Size = 'sm' | 'md' | 'lg'
@@ -12,75 +13,48 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   fullWidth?: boolean
 }
 
-const variantClasses: Record<Variant, string> = {
-  primary:
-    'bg-primary text-white hover:bg-primary-light active:scale-[0.98] shadow-sm',
-  secondary:
-    'bg-secondary text-white hover:bg-secondary-light active:scale-[0.98] shadow-sm',
-  ghost:
-    'bg-transparent text-primary border border-primary hover:bg-primary/5 active:scale-[0.98]',
-  danger:
-    'bg-error text-white hover:bg-red-700 active:scale-[0.98] shadow-sm',
+const variantClass: Record<Variant, string> = {
+  primary:   'feria-btn feria-btn-primary',
+  secondary: 'feria-btn feria-btn-secondary',
+  ghost:     'feria-btn feria-btn-ghost',
+  danger:    'feria-btn feria-btn-danger',
 }
 
-const sizeClasses: Record<Size, string> = {
-  sm: 'h-9 px-4 text-sm rounded-lg',
-  md: 'h-12 px-6 text-base rounded-xl',
-  lg: 'h-14 px-8 text-lg rounded-xl',
+const sizeClass: Record<Size, string> = {
+  sm: 'feria-btn-sm',
+  md: 'feria-btn-md',
+  lg: 'feria-btn-lg',
 }
+
+const Spinner = () => (
+  <svg className="animate-spin" width="15" height="15" viewBox="0 0 24 24" fill="none">
+    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" opacity="0.25" />
+    <path fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" opacity="0.75" />
+  </svg>
+)
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const MotionButton = motion.button as any
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      variant = 'primary',
-      size = 'md',
-      loading = false,
-      fullWidth = false,
-      disabled,
-      className = '',
-      children,
-      ...props
-    },
-    ref
-  ) => {
+  ({ variant = 'primary', size = 'md', loading = false, fullWidth = false, disabled, className = '', children, ...props }, ref) => {
     return (
-      <button
+      <MotionButton
         ref={ref}
         disabled={disabled || loading}
+        whileTap={{ scale: 0.97 }}
         className={[
-          'inline-flex items-center justify-center gap-2 font-medium transition-all duration-150',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2',
-          'disabled:opacity-50 disabled:pointer-events-none',
-          variantClasses[variant],
-          sizeClasses[size],
+          variantClass[variant],
+          sizeClass[size],
           fullWidth ? 'w-full' : '',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2',
           className,
         ].join(' ')}
         {...props}
       >
-        {loading ? (
-          <svg
-            className="animate-spin h-4 w-4"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v8H4z"
-            />
-          </svg>
-        ) : null}
+        {loading ? <Spinner /> : null}
         {children}
-      </button>
+      </MotionButton>
     )
   }
 )

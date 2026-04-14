@@ -1,47 +1,46 @@
-import { Card, CardHeader } from '@/components/ui/Card'
+import { Card } from '@/components/ui/Card'
 
 export function LocationCard() {
   const lat = 37.330306
   const lng = -5.901054
 
   const links = [
-    {
-      label: 'Google Maps',
-      emoji: '🗺️',
-      href: `https://www.google.com/maps?q=${lat},${lng}`,
-      bg: 'bg-blue-50 border-blue-200 text-blue-700',
-    },
-    {
-      label: 'Apple Maps',
-      emoji: '🍎',
-      href: `https://maps.apple.com/?ll=${lat},${lng}`,
-      bg: 'bg-gray-50 border-gray-200 text-gray-700',
-    },
-    {
-      label: 'Waze',
-      emoji: '🚗',
-      href: `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`,
-      bg: 'bg-sky-50 border-sky-200 text-sky-700',
-    },
+    { label: 'Google Maps', emoji: '🗺️', href: `https://www.google.com/maps?q=${lat},${lng}` },
+    { label: 'Apple Maps',  emoji: '🍎', href: `https://maps.apple.com/?ll=${lat},${lng}` },
+    { label: 'Waze',        emoji: '🚗', href: `https://waze.com/ul?ll=${lat},${lng}&navigate=yes` },
   ]
 
   return (
-    <Card>
-      <CardHeader icon="📍" title="Ubicación del evento" />
-      <p className="text-sm text-text-muted mb-1 font-medium">Calle Risco, 186</p>
-      <p className="text-sm text-text-muted mb-5">41500 · Alcalá de Guadaira, Sevilla</p>
+    <Card icon="📍" title="Ubicación del evento">
+      <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--feria-dark)', marginBottom: 2 }}>
+        Calle Risco, 186
+      </p>
+      <p style={{ fontSize: '0.875rem', color: 'var(--feria-muted)', marginBottom: 18 }}>
+        41500 · Alcalá de Guadaira, Sevilla
+      </p>
 
-      <div className="grid grid-cols-3 gap-2">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
         {links.map(link => (
           <a
             key={link.label}
             href={link.href}
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-center transition-opacity hover:opacity-80 ${link.bg}`}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 6,
+              padding: '12px 8px',
+              borderRadius: 12,
+              border: '1.5px solid var(--feria-border)',
+              background: 'var(--feria-gold-pale)',
+              textDecoration: 'none',
+              transition: 'opacity 0.15s',
+            }}
           >
-            <span className="text-2xl">{link.emoji}</span>
-            <span className="text-xs font-medium">{link.label}</span>
+            <span style={{ fontSize: '1.5rem' }}>{link.emoji}</span>
+            <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--feria-dark)' }}>{link.label}</span>
           </a>
         ))}
       </div>

@@ -28,35 +28,84 @@ export function DashboardNav({ profile }: { profile: Profile }) {
   const isAdmin = profile.role === 'admin' || profile.role === 'superadmin'
 
   return (
-    <header className="bg-surface border-b border-border sticky top-0 z-20">
-      {/* Franja top */}
-      <div className="h-1.5 stripes-red" />
-      <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
-        <Link href="/dashboard" className="font-display text-lg font-bold text-primary italic">
-          🎡 Preferia Fusión
+    <header className="feria-nav">
+      <div
+        style={{
+          maxWidth: 672,
+          margin: '0 auto',
+          padding: '0 16px',
+          height: 56,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        {/* Logo */}
+        <Link
+          href="/dashboard"
+          className="font-display italic font-bold"
+          style={{ fontSize: '1.2rem', color: 'var(--feria-red)', textDecoration: 'none' }}
+        >
+          Preferia Fusión
         </Link>
 
-        <div className="flex items-center gap-3">
+        {/* Acciones */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           {isAdmin && (
             <Link
               href="/admin"
-              className="text-xs font-medium text-secondary border border-secondary rounded-lg px-3 py-1.5 hover:bg-secondary/5 transition-colors"
+              style={{
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                color: 'var(--feria-green)',
+                border: '1.5px solid var(--feria-green)',
+                borderRadius: 20,
+                padding: '4px 12px',
+                textDecoration: 'none',
+                letterSpacing: '0.04em',
+                transition: 'all 0.15s',
+              }}
             >
-              Admin
+              Panel admin
             </Link>
           )}
+
+          {/* Avatar */}
           <div
-            className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold cursor-default"
             title={profile.full_name}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, var(--feria-red-dark), var(--feria-red))',
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '0.8rem',
+              fontWeight: 700,
+              border: '2px solid var(--feria-gold)',
+              flexShrink: 0,
+            }}
           >
             {initials}
           </div>
+
           <button
             onClick={handleSignOut}
             disabled={loading}
-            className="text-sm text-text-muted hover:text-text transition-colors"
+            style={{
+              fontSize: '0.8rem',
+              color: 'var(--feria-muted)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '4px 8px',
+              borderRadius: 6,
+              transition: 'color 0.15s',
+            }}
           >
-            Salir
+            {loading ? '...' : 'Salir'}
           </button>
         </div>
       </div>

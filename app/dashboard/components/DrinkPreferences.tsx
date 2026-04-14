@@ -2,7 +2,7 @@
 
 import { useReducer, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Card, CardHeader } from '@/components/ui/Card'
+import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import type { Drink, UserDrinkPreference } from '@/lib/types/database.types'
 
@@ -19,13 +19,9 @@ function initState(drinks: Drink[], saved: UserDrinkPreference[]): State {
   if (savedMap.size > 0) {
     return drinks.map(d => ({ drinkId: d.id, value: savedMap.get(d.id) ?? 0 }))
   }
-  // Distribución inicial uniforme
   const each = Math.floor(100 / drinks.length)
   const remainder = 100 - each * drinks.length
-  return drinks.map((d, i) => ({
-    drinkId: d.id,
-    value: i === 0 ? each + remainder : each,
-  }))
+  return drinks.map((d, i) => ({ drinkId: d.id, value: i === 0 ? each + remainder : each }))
 }
 
 function redistribute(state: State, changedId: string, newValue: number): State {
@@ -36,21 +32,16 @@ function redistribute(state: State, changedId: string, newValue: number): State 
 
   let newState = state.map(s => {
     if (s.drinkId === changedId) return { ...s, value: clamped }
-    if (others.length === 0) return s
-    if (s.value === 0) return s
+    if (others.length === 0 || s.value === 0) return s
     const share = totalOthers > 0 ? (s.value / totalOthers) * budget : budget / others.length
     return { ...s, value: Math.max(0, Math.round(share)) }
   })
 
-  // Corrección de redondeo: asegurar suma exacta = 100
   const total = newState.reduce((sum, s) => sum + s.value, 0)
   const diff = 100 - total
   if (diff !== 0) {
-    // Ajustar en el primer elemento distinto al cambiado
     const idx = newState.findIndex(s => s.drinkId !== changedId)
-    if (idx !== -1) {
-      newState[idx] = { ...newState[idx], value: Math.max(0, newState[idx].value + diff) }
-    }
+    if (idx !== -1) newState[idx] = { ...newState[idx], value: Math.max(0, newState[idx].value + diff) }
   }
 
   return newState
@@ -87,20 +78,27 @@ export function DrinkPreferences({ drinks, savedPreferences, userId }: Props) {
   const total = prefs.reduce((s, p) => s + p.value, 0)
 
   return (
-    <Card>
-      <CardHeader icon="🍻" title="Mis bebidas preferidas" subtitle="Ajusta los porcentajes para planificar la compra" />
-
-      <div className="flex flex-col gap-4 mb-5">
+    <Card icon="🍻" title="Mis bebidas preferidas" subtitle="Ajusta para planificar la compra colectiva">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 20 }}>
         {drinks.map(drink => {
           const pref = prefs.find(p => p.drinkId === drink.id)
           const value = pref?.value ?? 0
           return (
             <div key={drink.id}>
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-sm font-medium text-text">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--feria-dark)' }}>
                   {drink.emoji} {drink.name}
                 </span>
-                <span className="text-sm font-bold text-primary tabular-nums w-10 text-right">
+                <span
+                  style={{
+                    fontSize: '0.875rem',
+                    fontWeight: 700,
+                    color: 'var(--feria-red)',
+                    minWidth: 36,
+                    textAlign: 'right',
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
+                >
                   {value}%
                 </span>
               </div>
@@ -109,12 +107,15 @@ export function DrinkPreferences({ drinks, savedPreferences, userId }: Props) {
                 min={0}
                 max={100}
                 value={value}
-                onChange={e =>
-                  dispatch({ drinkId: drink.id, value: parseInt(e.target.value) })
-                }
-                className="w-full h-2 rounded-full appearance-none cursor-pointer"
+                onChange={e => dispatch({ drinkId: drink.id, value: parseInt(e.target.value) })}
                 style={{
-                  background: `linear-gradient(to right, var(--color-primary) ${value}%, var(--color-border) ${value}%)`,
+                  width: '100%',
+                  height: 6,
+                  borderRadius: 4,
+                  appearance: 'none',
+                  cursor: 'pointer',
+                  background: `linear-gradient(to right, var(--feria-red) ${value}%, var(--feria-border) ${value}%)`,
+                  outline: 'none',
                 }}
               />
             </div>
@@ -122,10 +123,12 @@ export function DrinkPreferences({ drinks, savedPreferences, userId }: Props) {
         })}
       </div>
 
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-xs text-text-muted">Total: {total}%</span>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+        <span style={{ fontSize: '0.75rem', color: 'var(--feria-muted)' }}>Total: {total}%</span>
         {total !== 100 && (
-          <span className="text-xs text-error font-medium">Debe sumar 100%</span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--feria-error)', fontWeight: 600 }}>
+            Debe sumar 100%
+          </span>
         )}
       </div>
 

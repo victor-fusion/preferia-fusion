@@ -2,9 +2,8 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Card, CardHeader } from '@/components/ui/Card'
+import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 
 interface PlaylistItem {
   id: string
@@ -23,8 +22,7 @@ interface Props {
 const SPOTIFY_REGEX = /^https:\/\/open\.spotify\.com\/(track|album|playlist)\/[a-zA-Z0-9]+/
 
 function getSpotifyId(url: string): string | null {
-  const match = url.match(/\/track\/([a-zA-Z0-9]+)/)
-  return match?.[1] ?? null
+  return url.match(/\/track\/([a-zA-Z0-9]+)/)?.[1] ?? null
 }
 
 export function PlaylistCard({ myPlaylist: initialMy, allPlaylist: initialAll, userId }: Props) {
@@ -64,60 +62,112 @@ export function PlaylistCard({ myPlaylist: initialMy, allPlaylist: initialAll, u
   }
 
   return (
-    <Card>
-      <CardHeader icon="🎶" title="Playlist colaborativa" subtitle="Las canciones que suenan el día del evento" />
+    <Card icon="🎶" title="Playlist colaborativa" subtitle="Las canciones que suenan el día del evento">
 
+      {/* Input añadir canción */}
       {myCount < 3 ? (
-        <div className="flex flex-col gap-3 mb-5">
-          <Input
-            id="spotifyUrl"
-            label={`Añadir canción (${myCount}/3)`}
-            placeholder="https://open.spotify.com/track/..."
-            value={url}
-            onChange={e => setUrl(e.target.value)}
-            error={error}
-          />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
+          <div>
+            <label
+              htmlFor="spotifyUrl"
+              style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--feria-dark)', marginBottom: 6, letterSpacing: '0.04em' }}
+            >
+              Añadir canción ({myCount}/3)
+            </label>
+            <input
+              id="spotifyUrl"
+              type="url"
+              placeholder="https://open.spotify.com/track/..."
+              value={url}
+              onChange={e => setUrl(e.target.value)}
+              className={`feria-input${error ? ' feria-input--error' : ''}`}
+            />
+            {error && (
+              <p style={{ fontSize: '0.75rem', color: 'var(--feria-error)', marginTop: 4 }}>{error}</p>
+            )}
+          </div>
           <Button onClick={handleAdd} loading={loading} fullWidth>
             Añadir canción
           </Button>
         </div>
       ) : (
-        <div className="rounded-xl bg-bg border border-border p-3 text-sm text-text-muted text-center mb-5">
-          Has añadido tus 3 canciones 🎵
+        <div
+          style={{
+            borderRadius: 10,
+            background: 'rgba(42,107,60,0.07)',
+            border: '1px solid rgba(42,107,60,0.25)',
+            padding: '10px 14px',
+            textAlign: 'center',
+            marginBottom: 20,
+          }}
+        >
+          <p style={{ fontSize: '0.875rem', color: 'var(--feria-green)', fontWeight: 600 }}>
+            Has añadido tus 3 canciones 🎵
+          </p>
         </div>
       )}
 
-      <div className="flex flex-col gap-2">
+      {/* Lista */}
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
         {all.length === 0 ? (
-          <p className="text-sm text-text-muted text-center py-4">
+          <p style={{ fontSize: '0.875rem', color: 'var(--feria-muted)', textAlign: 'center', padding: '16px 0' }}>
             Sé el primero en añadir una canción 🎧
           </p>
         ) : (
-          all.map(item => {
+          all.map((item, idx) => {
             const trackId = getSpotifyId(item.spotify_url)
             return (
-              <div key={item.id} className="flex items-center gap-3 py-2 border-b border-border last:border-0">
-                {trackId ? (
-                  <div className="w-10 h-10 rounded-lg bg-[#1DB954] flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+              <div
+                key={item.id}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  padding: '10px 0',
+                  borderBottom: idx < all.length - 1 ? '1px solid var(--feria-border)' : 'none',
+                }}
+              >
+                {/* Icono Spotify */}
+                <div
+                  style={{
+                    width: 38,
+                    height: 38,
+                    borderRadius: 10,
+                    background: trackId ? '#1DB954' : 'var(--feria-border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  {trackId ? (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
                       <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
                     </svg>
-                  </div>
-                ) : (
-                  <div className="w-10 h-10 rounded-lg bg-border flex items-center justify-center flex-shrink-0 text-lg">
-                    🎵
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
+                  ) : (
+                    <span style={{ fontSize: '1.1rem' }}>🎵</span>
+                  )}
+                </div>
+
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <a
                     href={item.spotify_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm font-medium text-primary hover:underline truncate block"
+                    style={{
+                      display: 'block',
+                      fontSize: '0.8rem',
+                      fontWeight: 600,
+                      color: 'var(--feria-red)',
+                      textDecoration: 'none',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
                   >
                     {item.spotify_url.replace('https://open.spotify.com/', '').split('?')[0]}
                   </a>
-                  <p className="text-xs text-text-muted">
+                  <p style={{ fontSize: '0.75rem', color: 'var(--feria-muted)', marginTop: 1 }}>
                     {item.profiles?.full_name ?? 'Anónimo'}
                   </p>
                 </div>

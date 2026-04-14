@@ -1,111 +1,412 @@
 @import "tailwindcss";
 
-/* ─── Design tokens ─────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════
+   FERIA DE SEVILLA 2026 — Design System
+   Inspired by the Portada de la Feria de Abril de Sevilla
+   ═══════════════════════════════════════════════════════ */
+
 :root {
-  --color-primary:       #9B1C1C;
-  --color-primary-light: #C53030;
-  --color-secondary:     #1A6B3A;
-  --color-secondary-light: #22864A;
-  --color-bg:            #FDF6EC;
-  --color-gold:          #C9963C;
-  --color-gold-light:    #E2B75A;
-  --color-text:          #1A1A1A;
-  --color-text-muted:    #6B6B6B;
-  --color-surface:       #FFFFFF;
-  --color-border:        #E8D5B7;
-  --color-error:         #DC2626;
+  /* ── Paleta de la Portada ── */
+  --feria-cream:        #FDF8EE;   /* Papel de seda */
+  --feria-ivory:        #FFFEF8;   /* Blanco marfil */
+  --feria-red:          #9B2335;   /* Rojo portada */
+  --feria-red-dark:     #7B1C29;   /* Rojo oscuro */
+  --feria-red-light:    #B83040;   /* Rojo hover */
+  --feria-gold:         #C8963A;   /* Dorado ornamental */
+  --feria-gold-light:   #E2B84E;   /* Dorado claro */
+  --feria-gold-pale:    #F5E5C0;   /* Dorado muy suave */
+  --feria-green:        #2A6B3C;   /* Verde andaluz */
+  --feria-green-light:  #38875E;   /* Verde claro */
+  --feria-blue:         #5B9EC9;   /* Azul arco */
+  --feria-blue-light:   #A8CCE4;   /* Azul claro */
+  --feria-dark:         #1E0A06;   /* Texto oscuro */
+  --feria-muted:        #7A6858;   /* Texto secundario */
+  --feria-border:       #DEC98A;   /* Borde dorado suave */
+  --feria-error:        #DC2626;
+
+  /* ── Aliases semánticos (compatibilidad con código existente) ── */
+  --color-primary:      var(--feria-red);
+  --color-primary-light: var(--feria-red-light);
+  --color-secondary:    var(--feria-green);
+  --color-secondary-light: var(--feria-green-light);
+  --color-bg:           var(--feria-cream);
+  --color-gold:         var(--feria-gold);
+  --color-gold-light:   var(--feria-gold-light);
+  --color-text:         var(--feria-dark);
+  --color-text-muted:   var(--feria-muted);
+  --color-surface:      var(--feria-ivory);
+  --color-border:       var(--feria-border);
+  --color-error:        var(--feria-error);
 }
 
-/* ─── Tailwind v4: expose CSS vars as utility classes ────── */
+/* ── Tailwind v4 bridge ── */
 @theme inline {
-  --color-primary:        var(--color-primary);
-  --color-primary-light:  var(--color-primary-light);
-  --color-secondary:      var(--color-secondary);
-  --color-secondary-light: var(--color-secondary-light);
-  --color-bg:             var(--color-bg);
-  --color-gold:           var(--color-gold);
-  --color-gold-light:     var(--color-gold-light);
-  --color-text:           var(--color-text);
-  --color-text-muted:     var(--color-text-muted);
-  --color-surface:        var(--color-surface);
-  --color-border:         var(--color-border);
-  --color-error:          var(--color-error);
-
-  --font-display: var(--font-playfair);
-  --font-body:    var(--font-inter);
+  --color-primary:        var(--feria-red);
+  --color-primary-light:  var(--feria-red-light);
+  --color-secondary:      var(--feria-green);
+  --color-secondary-light: var(--feria-green-light);
+  --color-bg:             var(--feria-cream);
+  --color-gold:           var(--feria-gold);
+  --color-gold-light:     var(--feria-gold-light);
+  --color-text:           var(--feria-dark);
+  --color-text-muted:     var(--feria-muted);
+  --color-surface:        var(--feria-ivory);
+  --color-border:         var(--feria-border);
+  --color-error:          var(--feria-error);
+  --font-display:         var(--font-playfair);
+  --font-body:            var(--font-inter);
 }
 
-/* ─── Base ──────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════════════ */
 html {
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  background-color: var(--feria-cream);
+  color: var(--feria-dark);
 }
 
 body {
   font-family: var(--font-inter), system-ui, sans-serif;
-  background-color: var(--color-bg);
+  background-color: var(--feria-cream);
   min-height: 100dvh;
 }
 
-/* ─── Stripes helper (vertical rojo/blanco) ─────────────── */
+/* ═══════════════════════════════════════════════════════
+   FRANJAS (Caseta stripes)
+   ═══════════════════════════════════════════════════════ */
 .stripes-red {
   background: repeating-linear-gradient(
     90deg,
-    var(--color-primary) 0px,
-    var(--color-primary) 14px,
-    #ffffff 14px,
-    #ffffff 28px
+    var(--feria-red)  0px,
+    var(--feria-red)  16px,
+    #ffffff           16px,
+    #ffffff           32px
   );
 }
 
 .stripes-green {
   background: repeating-linear-gradient(
     90deg,
-    var(--color-secondary) 0px,
-    var(--color-secondary) 14px,
-    #ffffff 14px,
-    #ffffff 28px
+    var(--feria-green) 0px,
+    var(--feria-green) 16px,
+    #ffffff            16px,
+    #ffffff            32px
   );
 }
 
-/* ─── Lunares helper (detalle sutil) ────────────────────── */
-.polka-dots {
-  background-image: radial-gradient(
-    circle,
-    var(--color-gold) 1.5px,
-    transparent 1.5px
+/* ═══════════════════════════════════════════════════════
+   TARJETAS — Estilo Portada
+   ═══════════════════════════════════════════════════════ */
+
+/* Tarjeta base con marco dorado */
+.feria-card {
+  background: var(--feria-ivory);
+  border-radius: 16px;
+  border: 2px solid var(--feria-gold);
+  box-shadow:
+    0 4px 24px rgba(155, 35, 53, 0.08),
+    0 1px 4px rgba(200, 150, 58, 0.15),
+    inset 0 0 0 1px rgba(232, 186, 90, 0.12);
+  overflow: hidden;
+}
+
+/* Cabecera de tarjeta estilo arco-portada */
+.feria-card-header {
+  background: linear-gradient(135deg, var(--feria-red-dark) 0%, var(--feria-red) 100%);
+  color: white;
+  padding: 14px 20px 12px;
+  border-bottom: 2px solid var(--feria-gold);
+  position: relative;
+}
+
+/* Arco decorativo en la parte baja del header */
+.feria-card-header::after {
+  content: '';
+  position: absolute;
+  bottom: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 11px;
+  background: var(--feria-red);
+  clip-path: ellipse(50% 100% at 50% 0%);
+  z-index: 1;
+}
+
+.feria-card-body {
+  padding: 20px;
+}
+
+/* Alias para código existente */
+.card-gold {
+  background: var(--feria-ivory);
+  border: 2px solid var(--feria-gold);
+  border-radius: 1rem;
+  box-shadow: 0 2px 16px rgba(200, 150, 58, 0.12);
+}
+
+/* ═══════════════════════════════════════════════════════
+   TARJETA DE AUTENTICACIÓN — Arco con cabecera roja
+   ═══════════════════════════════════════════════════════ */
+.auth-card {
+  background: var(--feria-ivory);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow:
+    0 12px 48px rgba(155, 35, 53, 0.14),
+    0 0 0 3px var(--feria-gold),
+    0 0 0 6px rgba(200, 150, 58, 0.18);
+}
+
+.auth-card-header {
+  background: linear-gradient(160deg, var(--feria-red-dark) 0%, var(--feria-red) 60%, var(--feria-red-light) 100%);
+  padding: 28px 32px 32px;
+  text-align: center;
+  position: relative;
+  border-bottom: 3px solid var(--feria-gold);
+}
+
+/* Arco invertido (decorativo) al fondo del header */
+.auth-card-header::after {
+  content: '';
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 72px;
+  height: 14px;
+  background: var(--feria-red);
+  clip-path: ellipse(50% 100% at 50% 0%);
+  border: 0;
+  z-index: 2;
+}
+
+.auth-card-body {
+  padding: 32px 28px 28px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   COUNTDOWN — Marco ornamental
+   ═══════════════════════════════════════════════════════ */
+.portada-countdown {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 3px solid var(--feria-gold);
+  box-shadow:
+    0 4px 24px rgba(200, 150, 58, 0.18),
+    inset 0 0 0 1px rgba(232, 186, 90, 0.2);
+}
+
+.portada-countdown-header {
+  background: linear-gradient(135deg, var(--feria-red-dark), var(--feria-red));
+  padding: 10px 16px;
+  text-align: center;
+  border-bottom: 2px solid var(--feria-gold);
+}
+
+.portada-countdown-body {
+  background: var(--feria-ivory);
+  padding: 20px 16px 16px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   BOTONES — Estilo Feria
+   ═══════════════════════════════════════════════════════ */
+.feria-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+  text-decoration: none;
+  border: 2px solid transparent;
+  white-space: nowrap;
+}
+.feria-btn:disabled,
+.feria-btn[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.feria-btn-sm  { height: 36px;  padding: 0 16px; font-size: 0.875rem; border-radius: 10px; }
+.feria-btn-md  { height: 48px;  padding: 0 24px; font-size: 1rem; }
+.feria-btn-lg  { height: 56px;  padding: 0 32px; font-size: 1.0625rem; }
+
+/* Primary (rojo) */
+.feria-btn-primary {
+  background: linear-gradient(135deg, var(--feria-red-dark) 0%, var(--feria-red) 100%);
+  color: white;
+  border-color: var(--feria-red-dark);
+  box-shadow: 0 4px 14px rgba(155, 35, 53, 0.28), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.feria-btn-primary:hover {
+  background: linear-gradient(135deg, #6B1520 0%, var(--feria-red-dark) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(155, 35, 53, 0.35);
+}
+.feria-btn-primary:active { transform: scale(0.97); }
+
+/* Ghost (dorado) */
+.feria-btn-ghost {
+  background: transparent;
+  color: var(--feria-red);
+  border-color: var(--feria-gold);
+  box-shadow: 0 2px 8px rgba(200, 150, 58, 0.12);
+}
+.feria-btn-ghost:hover {
+  background: var(--feria-gold-pale);
+  border-color: var(--feria-gold-light);
+  transform: translateY(-1px);
+}
+.feria-btn-ghost:active { transform: scale(0.97); }
+
+/* Secondary (verde) */
+.feria-btn-secondary {
+  background: linear-gradient(135deg, #1E5430 0%, var(--feria-green) 100%);
+  color: white;
+  border-color: #1E5430;
+  box-shadow: 0 4px 14px rgba(42, 107, 60, 0.25);
+}
+.feria-btn-secondary:hover {
+  background: linear-gradient(135deg, #183F25 0%, #1E5430 100%);
+  transform: translateY(-1px);
+}
+.feria-btn-secondary:active { transform: scale(0.97); }
+
+/* Danger */
+.feria-btn-danger {
+  background: linear-gradient(135deg, #b91c1c 0%, var(--feria-error) 100%);
+  color: white;
+  border-color: #b91c1c;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.25);
+}
+.feria-btn-danger:hover {
+  background: linear-gradient(135deg, #991b1b 0%, #b91c1c 100%);
+  transform: translateY(-1px);
+}
+.feria-btn-danger:active { transform: scale(0.97); }
+
+/* ═══════════════════════════════════════════════════════
+   INPUTS — Estilo Feria
+   ═══════════════════════════════════════════════════════ */
+.feria-input {
+  height: 48px;
+  width: 100%;
+  border-radius: 10px;
+  border: 2px solid var(--feria-border);
+  background: var(--feria-ivory);
+  padding: 0 16px;
+  font-size: 1rem;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  color: var(--feria-dark);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+.feria-input:focus {
+  border-color: var(--feria-gold);
+  box-shadow: 0 0 0 3px rgba(200, 150, 58, 0.15);
+}
+.feria-input::placeholder {
+  color: var(--feria-muted);
+  opacity: 0.6;
+}
+.feria-input--error {
+  border-color: var(--feria-error);
+}
+.feria-input--error:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+/* ═══════════════════════════════════════════════════════
+   NAVEGACIÓN — Cabecera Portada
+   ═══════════════════════════════════════════════════════ */
+.feria-nav {
+  background: var(--feria-ivory);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 2px solid var(--feria-gold);
+  box-shadow: 0 2px 12px rgba(200, 150, 58, 0.1);
+}
+
+.feria-nav::before {
+  content: '';
+  display: block;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--feria-red)   0px, var(--feria-red)   14px,
+    white              14px, white              28px
   );
+}
+
+/* ═══════════════════════════════════════════════════════
+   SEPARADORES ORNAMENTALES
+   ═══════════════════════════════════════════════════════ */
+.gold-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--feria-gold) 30%, var(--feria-gold-light) 50%, var(--feria-gold) 70%, transparent 100%);
+  margin: 4px 0;
+}
+
+.gold-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--feria-gold) 20%, var(--feria-gold-light) 50%, var(--feria-gold) 80%, transparent 100%);
+}
+
+/* Puntitos lunares */
+.polka-dots {
+  background-image: radial-gradient(circle, var(--feria-gold) 1.5px, transparent 1.5px);
   background-size: 20px 20px;
 }
 
-/* ─── Card dorada ───────────────────────────────────────── */
-.card-gold {
-  background: var(--color-surface);
-  border: 1.5px solid var(--color-gold);
-  border-radius: 1rem;
-  box-shadow: 0 2px 12px 0 rgba(201, 150, 60, 0.10);
-}
-
-/* ─── Badge helpers ─────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════
+   BADGES DE ESTADO
+   ═══════════════════════════════════════════════════════ */
 .badge-confirmed {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
   background: #D1FAE5;
   color: #065F46;
   border: 1px solid #6EE7B7;
 }
 
 .badge-pending {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
   background: #FEF3C7;
   color: #92400E;
   border: 1px solid #FCD34D;
 }
 
 .badge-unconfirmed {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
   background: #F3F4F6;
   color: #374151;
   border: 1px solid #D1D5DB;
 }
 
-/* ─── Scrollbar sutil ───────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════════════════════ */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: var(--feria-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--feria-gold); }

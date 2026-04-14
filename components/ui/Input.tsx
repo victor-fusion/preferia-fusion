@@ -5,27 +5,32 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export function Input({ label, error, id, className = '', ...props }: InputProps) {
   return (
-    <div className="flex flex-col gap-1">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
       {label && (
-        <label htmlFor={id} className="text-sm font-medium text-text">
+        <label
+          htmlFor={id}
+          style={{
+            fontSize: '0.8rem',
+            fontWeight: 600,
+            color: 'var(--feria-dark)',
+            letterSpacing: '0.04em',
+          }}
+        >
           {label}
         </label>
       )}
       <input
         id={id}
         className={[
-          'h-12 w-full rounded-xl border bg-surface px-4 text-text text-base',
-          'placeholder:text-text-muted',
-          'focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold',
-          'transition-colors',
-          error
-            ? 'border-error focus:ring-error'
-            : 'border-border',
+          'feria-input',
+          error ? 'feria-input--error' : '',
           className,
         ].join(' ')}
         {...props}
       />
-      {error && <p className="text-xs text-error">{error}</p>}
+      {error && (
+        <p style={{ fontSize: '0.75rem', color: 'var(--feria-error)' }}>{error}</p>
+      )}
     </div>
   )
 }

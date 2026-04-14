@@ -36,14 +36,13 @@ export default async function DashboardPage() {
 
   if (!profile) redirect('/login')
 
-  // Checklist
-  const hasPaid = attendance?.payment_status === 'confirmado' || attendance?.payment_status === 'pago_enviado'
+  const hasPaid   = attendance?.payment_status === 'confirmado' || attendance?.payment_status === 'pago_enviado'
   const hasDrinks = (preferences?.length ?? 0) > 0
   const hasPlaylist = (myPlaylist?.length ?? 0) > 0
 
   const checklist = [
-    { key: 'payment', done: hasPaid, label: 'Confirmar asistencia y pagar (20€)' },
-    { key: 'drinks', done: hasDrinks, label: 'Elegir mis bebidas preferidas' },
+    { key: 'payment',  done: hasPaid,     label: 'Confirmar asistencia y pagar (20€)' },
+    { key: 'drinks',   done: hasDrinks,   label: 'Elegir mis bebidas preferidas' },
     { key: 'playlist', done: hasPlaylist, label: 'Añadir canción a la playlist' },
   ]
 
@@ -51,46 +50,77 @@ export default async function DashboardPage() {
 
   return (
     <>
-      {/* Saludo */}
-      <div>
-        <h1 className="font-display text-2xl font-bold text-text italic">
-          ¡Hola, {profile.full_name.split(' ')[0]}! 🎉
+      {/* ── Saludo ── */}
+      <div style={{ paddingBottom: 4 }}>
+        <h1
+          className="font-display italic font-bold"
+          style={{ fontSize: '1.6rem', color: 'var(--feria-red)', lineHeight: 1.2 }}
+        >
+          ¡Hola, {profile.full_name.split(' ')[0]}!
         </h1>
-        <p className="text-text-muted text-sm mt-0.5">17 de abril · Alcalá de Guadaira</p>
+        <p style={{ color: 'var(--feria-muted)', fontSize: '0.85rem', marginTop: 2 }}>
+          17 de abril · Alcalá de Guadaira · 14:30h
+        </p>
       </div>
 
-      {/* Checklist */}
-      <div className="card-gold p-5">
-        <h2 className="font-display text-base font-semibold text-text mb-3">
-          Tu lista de tareas
-        </h2>
-        <ul className="flex flex-col gap-2">
-          {checklist.map(item => (
-            <li key={item.key} className="flex items-center gap-3 text-sm">
-              <span className={item.done ? 'text-green-600' : 'text-border'}>
-                {item.done ? '✅' : '⬜'}
-              </span>
-              <span className={item.done ? 'line-through text-text-muted' : 'text-text'}>
-                {item.label}
-              </span>
-            </li>
-          ))}
-          <li className="flex items-center gap-3 text-sm">
-            <span className="text-border">⬜</span>
-            <span className="text-text">Ver ubicación del evento</span>
-          </li>
-          <li className="flex items-center gap-3 text-sm">
-            <span className="text-border">⬜</span>
-            <span className="text-text">Leer las normas</span>
-          </li>
-        </ul>
-        {allDone && (
-          <div className="mt-4 rounded-xl bg-green-50 border border-green-200 p-3 text-center">
-            <p className="text-green-700 font-medium text-sm">
-              🎊 ¡Todo listo! Nos vemos el 17 de abril
-            </p>
-          </div>
-        )}
+      {/* ── Checklist ── */}
+      <div className="feria-card">
+        <div className="feria-card-header">
+          <h2
+            className="font-display italic"
+            style={{ fontSize: '1rem', fontWeight: 600, color: 'white', position: 'relative', zIndex: 2 }}
+          >
+            Tu lista de tareas
+          </h2>
+        </div>
+        <div className="feria-card-body">
+          <ul style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {checklist.map(item => (
+              <li key={item.key} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.875rem' }}>
+                <span
+                  style={{
+                    width: 22,
+                    height: 22,
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    background: item.done ? 'var(--feria-green)' : 'transparent',
+                    border: item.done ? 'none' : '2px solid var(--feria-border)',
+                    fontSize: '0.7rem',
+                    color: 'white',
+                  }}
+                >
+                  {item.done ? '✓' : ''}
+                </span>
+                <span style={{
+                  color: item.done ? 'var(--feria-muted)' : 'var(--feria-dark)',
+                  textDecoration: item.done ? 'line-through' : 'none',
+                }}>
+                  {item.label}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          {allDone && (
+            <div
+              style={{
+                marginTop: 16,
+                borderRadius: 10,
+                background: 'linear-gradient(135deg, rgba(42,107,60,0.08), rgba(42,107,60,0.04))',
+                border: '1px solid rgba(42,107,60,0.3)',
+                padding: '10px 14px',
+                textAlign: 'center',
+              }}
+            >
+              <p style={{ color: 'var(--feria-green)', fontWeight: 600, fontSize: '0.875rem' }}>
+                🎊 ¡Todo listo! Nos vemos el 17 de abril
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       <AttendanceCard

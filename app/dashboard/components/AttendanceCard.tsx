@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Card, CardHeader } from '@/components/ui/Card'
+import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import type { Attendance, EventSettings } from '@/lib/types/database.types'
 
@@ -14,9 +14,9 @@ interface Props {
 }
 
 const statusInfo = {
-  sin_confirmar: { badge: '⬜ Sin confirmar', className: 'badge-unconfirmed' },
-  pago_enviado: { badge: '🟡 Pago enviado', className: 'badge-pending' },
-  confirmado: { badge: '✅ Confirmado', className: 'badge-confirmed' },
+  sin_confirmar: { label: 'Sin confirmar', className: 'badge-unconfirmed' },
+  pago_enviado:  { label: 'Pago enviado',  className: 'badge-pending' },
+  confirmado:    { label: 'Confirmado',     className: 'badge-confirmed' },
 }
 
 export function AttendanceCard({ attendance, settings, userId, userName }: Props) {
@@ -35,56 +35,74 @@ export function AttendanceCard({ attendance, settings, userId, userName }: Props
     setLoading(false)
   }
 
-  const info = statusInfo[currentStatus]
+  const info = statusInfo[currentStatus as keyof typeof statusInfo]
 
   return (
-    <Card accent>
-      <CardHeader icon="💸" title="Confirmación y pago" subtitle="Precio: 20€ por persona" />
+    <Card icon="💸" title="Confirmación y pago" subtitle="Precio: 20€ por persona">
 
-      <div className="mb-4">
-        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${info.className}`}>
-          {info.badge}
+      <div style={{ marginBottom: 16 }}>
+        <span className={info.className} style={{ fontSize: '0.8rem', padding: '4px 12px', borderRadius: 20, fontWeight: 600 }}>
+          {currentStatus === 'sin_confirmar' ? '⬜' : currentStatus === 'pago_enviado' ? '🟡' : '✅'}&nbsp;{info.label}
         </span>
       </div>
 
       {currentStatus === 'confirmado' ? (
-        <div className="rounded-xl bg-green-50 border border-green-200 p-4 text-center">
-          <p className="text-green-700 font-medium">
+        <div
+          style={{
+            borderRadius: 12,
+            background: 'rgba(42,107,60,0.07)',
+            border: '1px solid rgba(42,107,60,0.3)',
+            padding: '14px 16px',
+            textAlign: 'center',
+          }}
+        >
+          <p style={{ color: 'var(--feria-green)', fontWeight: 600, fontSize: '0.9rem' }}>
             ✅ Tu pago ha sido verificado. ¡Estás dentro!
           </p>
         </div>
+
       ) : currentStatus === 'pago_enviado' ? (
-        <div className="rounded-xl bg-amber-50 border border-amber-200 p-4">
-          <p className="text-amber-800 text-sm">
+        <div
+          style={{
+            borderRadius: 12,
+            background: '#FFFBEB',
+            border: '1px solid #FCD34D',
+            padding: '14px 16px',
+          }}
+        >
+          <p style={{ color: '#92400E', fontSize: '0.875rem' }}>
             🕐 Hemos recibido tu aviso. El organizador verificará tu pago pronto.
           </p>
         </div>
+
       ) : (
-        <div className="flex flex-col gap-4">
-          <div className="rounded-xl bg-bg border border-border p-4 flex flex-col gap-2">
-            <p className="text-sm font-medium text-text">Datos para el Bizum:</p>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-text-muted">Número</span>
-              <span className="text-sm font-mono font-bold text-text">
-                {settings?.bizum_number || '—'}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-text-muted">Titular</span>
-              <span className="text-sm font-medium text-text">
-                {settings?.bizum_holder || '—'}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-text-muted">Concepto</span>
-              <span className="text-sm font-medium text-primary">
-                Preferia {userName.split(' ')[0]}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-text-muted">Importe</span>
-              <span className="text-sm font-bold text-text">20,00 €</span>
-            </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {/* Datos Bizum */}
+          <div
+            style={{
+              borderRadius: 12,
+              background: 'var(--feria-gold-pale)',
+              border: '1px solid var(--feria-border)',
+              padding: '14px 16px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 8,
+            }}
+          >
+            <p style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--feria-dark)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              Datos para el Bizum
+            </p>
+            {[
+              { label: 'Número',   value: settings?.bizum_number || '—' },
+              { label: 'Titular',  value: settings?.bizum_holder || '—' },
+              { label: 'Concepto', value: `Preferia ${userName.split(' ')[0]}` },
+              { label: 'Importe',  value: '20,00 €' },
+            ].map(row => (
+              <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.8rem', color: 'var(--feria-muted)' }}>{row.label}</span>
+                <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--feria-dark)' }}>{row.value}</span>
+              </div>
+            ))}
           </div>
 
           <Button onClick={handleBizumSent} loading={loading} fullWidth size="lg">

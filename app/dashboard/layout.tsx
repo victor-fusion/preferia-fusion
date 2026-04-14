@@ -21,12 +21,15 @@ export default async function DashboardLayout({
   if (!profile) redirect('/login')
 
   return (
-    <div className="min-h-dvh flex flex-col bg-bg">
+    <div
+      className="min-h-dvh flex flex-col"
+      style={{ background: 'var(--feria-cream)' }}
+    >
       <DashboardNav profile={profile} />
       <main className="flex-1 w-full max-w-2xl mx-auto px-4 py-6 flex flex-col gap-5">
         {children}
       </main>
-      <div className="h-2 stripes-green" />
+      <div className="h-3 stripes-green" />
     </div>
   )
 }

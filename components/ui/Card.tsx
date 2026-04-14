@@ -1,38 +1,80 @@
+/* ── Card con estética Portada de Feria ──
+   API:
+     <Card icon="💸" title="Título" subtitle="Subtítulo opcional">
+       contenido del body
+     </Card>
+   O sin header:
+     <Card>{contenido}</Card>
+   ── */
+
 interface CardProps {
   children: React.ReactNode
   className?: string
+  /** Si se pasa title, renderiza la cabecera roja con arco */
+  title?: string
+  icon?: string
+  subtitle?: string
+  /** accent ignorado — compatibilidad hacia atrás */
   accent?: boolean
 }
 
-export function Card({ children, className = '', accent = false }: CardProps) {
+export function Card({ children, className = '', title, icon, subtitle }: CardProps) {
   return (
-    <div
-      className={[
-        'card-gold p-5 sm:p-6',
-        accent ? 'border-t-4 border-t-primary' : '',
-        className,
-      ].join(' ')}
-    >
-      {children}
+    <div className={`feria-card ${className}`}>
+      {title && (
+        <div className="feria-card-header">
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              position: 'relative',
+              zIndex: 2,
+            }}
+          >
+            {icon && <span style={{ fontSize: '1.1rem' }}>{icon}</span>}
+            <h2
+              className="font-display italic"
+              style={{ fontSize: '1rem', fontWeight: 600, color: 'white', margin: 0 }}
+            >
+              {title}
+            </h2>
+          </div>
+          {subtitle && (
+            <p
+              style={{
+                fontSize: '0.75rem',
+                color: 'rgba(255,255,255,0.65)',
+                marginTop: 2,
+                position: 'relative',
+                zIndex: 2,
+              }}
+            >
+              {subtitle}
+            </p>
+          )}
+        </div>
+      )}
+      <div className="feria-card-body">{children}</div>
     </div>
   )
 }
 
-interface CardHeaderProps {
-  icon?: string
-  title: string
-  subtitle?: string
-}
-
-export function CardHeader({ icon, title, subtitle }: CardHeaderProps) {
+/** @deprecated Usa las props icon/title/subtitle de <Card> directamente */
+export function CardHeader({ icon, title, subtitle }: { icon?: string; title: string; subtitle?: string }) {
   return (
-    <div className="mb-4">
-      <div className="flex items-center gap-2 mb-1">
-        {icon && <span className="text-xl">{icon}</span>}
-        <h2 className="font-display text-lg font-semibold text-text">{title}</h2>
+    <div style={{ marginBottom: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+        {icon && <span style={{ fontSize: '1.2rem' }}>{icon}</span>}
+        <h2
+          className="font-display italic"
+          style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--feria-red)' }}
+        >
+          {title}
+        </h2>
       </div>
       {subtitle && (
-        <p className="text-sm text-text-muted">{subtitle}</p>
+        <p style={{ fontSize: '0.8rem', color: 'var(--feria-muted)' }}>{subtitle}</p>
       )}
     </div>
   )
